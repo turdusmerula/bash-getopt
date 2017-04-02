@@ -58,8 +58,8 @@ Add a flag to the option list, flags do not allow any user custom value.
 
 Takes 4 parameters:
 
-  * shorthand name of the option prefixed by '-', one letter size. This parameter is Optional.
-  * full name of the option prefixed by '--'.
+  * shorthand name of the option prefixed by ```-```, one letter size. This parameter is Optional.
+  * full name of the option prefixed by ```--```.
   * description of the option.
   * variable name that will take the option value.
 
@@ -67,16 +67,16 @@ Takes 4 parameters:
 
 Add a flag to the option list, flags do not allow any user custom value.
 
-This option differs from ''getopt_add_flag'' as it allow to specify a custom action instead of filling a variable.
+This option differs from ```getopt_add_flag``` as it allow to specify a custom action instead of filling a variable.
 
 Takes 4 parameters:
 
-  * shorthand name of the option prefixed by '-', one letter size. This parameter is Optional.
-  * full name of the option prefixed by '--'.
+  * shorthand name of the option prefixed by ```-```, one letter size. This parameter is Optional.
+  * full name of the option prefixed by ```--```.
   * description of the option.
   * action to execute.
 
-Exemple, for the ''--help'' option you will find the following action ''getopt_usage; exit 1'' that show usage and exits immediately.
+Exemple, for the ```--help``` option you will find the following action ```getopt_usage; exit 1``` that show usage and exits immediately.
 
 ### getopt_add_option
 
@@ -84,15 +84,15 @@ Add an option to the list, options are waiting for the user to fill a value.
 
 Takes 4 parameters:
 
-  * shorthand name of the option prefixed by '-', one letter size. This parameter is Optional.
-  * full name of the option prefixed by '--'.
+  * shorthand name of the option prefixed by ```-```, one letter size. This parameter is Optional.
+  * full name of the option prefixed by ```--```.
   * description of the expected value.
   * description of the option.
   * variable name that will take the option value.
 
 ### getopt_add_help
 
-Add the ''--help'' option automaticallys.
+Add the ```--help``` option automaticallys.
 
 ### getopt_add_command
 
@@ -138,13 +138,17 @@ Push some commands in cache. This function should be called before reading argum
 
 The call is usualy made from the whole command line:
 
-  getopt_set_args "$@"
+```
+getopt_set_args "$@"
+```
 
 You can also give arguments from a custom array:
 
-  getopt_set_args "${array[@]}"
+```
+getopt_set_args "${array[@]}"
+```
 
 ### getopt_allow_custom_command
 
-Allow getopt_read_args to not fail if an unknown command is found, allowing to add custom behavior.
+Allow ```getopt_read_args``` to not fail if an unknown command is found, allowing to add custom behavior.
 

@@ -108,8 +108,8 @@ function getopt_allow_custom_command() {
 }
 
 # return:
-# 0: option exist
-# 1: option does not exist
+# 0: name exist
+# 1: name does not exist
 function getopt_check_name_exist() {
 	name="$1"
 	
@@ -135,6 +135,59 @@ function getopt_check_name_exist() {
 # return:
 # 0: option exist
 # 1: option does not exist
+function getopt_check_option_exist() {
+	name="$1"
+	
+	i=0
+	for short in "${getopt_shorts[@]}"
+	do
+		type=${getopt_types[$i]}
+		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		then
+			return 0
+		fi
+	
+		(( i = i + 1 ))
+	done
+
+	i=0
+	for option in "${getopt_names[@]}"
+	do
+		type=${getopt_types[$i]}
+		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		then
+			return 0
+		fi
+	
+		(( i = i + 1 ))
+	done
+
+	return 1
+}
+
+# return:
+# 0: command exist
+# 1: command does not exist
+function getopt_check_command_exist() {
+	name="$1"
+	
+	i=0
+	for option in "${getopt_names[@]}"
+	do
+		type=${getopt_types[$i]}
+		if [[ "_$name" == "_$option" ]] && [[ $type -eq 3 ]]
+		then
+			return 0
+		fi
+		(( i = i + 1 ))
+	done
+
+	return 1
+}
+
+# return:
+# 0: name exist
+# 1: name does not exist
 function getopt_check_name_index() {
 	name="$1"
 	
@@ -153,6 +206,60 @@ function getopt_check_name_index() {
 	for option in "${getopt_names[@]}"
 	do
 		if [[ "_$name" == "_$option" ]]
+		then
+			echo $i
+			return 0
+		fi
+		(( i = i + 1 ))
+	done
+
+	return 1
+}
+
+# return:
+# 0: option exist
+# 1: option does not exist
+function getopt_check_option_index() {
+	name="$1"
+	
+	i=0
+	for short in "${getopt_shorts[@]}"
+	do
+		type=${getopt_types[$i]}
+		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		then
+			echo $i
+			return 0
+		fi
+		(( i = i + 1 ))
+	done
+
+	i=0
+	for option in "${getopt_names[@]}"
+	do
+		type=${getopt_types[$i]}
+		if [[ "_$option" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		then
+			echo $i
+			return 0
+		fi
+		(( i = i + 1 ))
+	done
+
+	return 1
+}
+
+# return:
+# 0: option exist
+# 1: option does not exist
+function getopt_check_command_index() {
+	name="$1"
+	
+	i=0
+	for option in "${getopt_names[@]}"
+	do
+		type=${getopt_types[$i]}
+		if [[ "_$option" == "_$option" ]] && [[ $type -eq 3 ]]
 		then
 			echo $i
 			return 0
@@ -184,14 +291,7 @@ function getopt_read_arg() {
 	
     local arg="${getopt_args[0]}" 
     
-	if [[ $getopt_parse_options -ne 1 ]]
-	then
-	    # parsing disabled, return option as this 
-		echo $arg
-		return 0
-	fi
-
-	if [[ "_${arg:0:1}" == "_-" ]]
+	if [[ "_${arg:0:1}" == "_-" ]] && [[ $getopt_parse_options -eq 1 ]]
 	then
 		# parse option
 	    if [ "_$(echo "$arg" | grep '=')" != "_" ]
@@ -203,21 +303,29 @@ function getopt_read_arg() {
 	        unset value_arg
 	    fi
 		
-		if [[ "_${filt_arg:0:2}" == "_--" ]]
+		if [[ "_${filt_arg}" == "_--" ]] && [[ $getopt_parse_options -eq 1 ]]
+		then
+			# stop parsing options
+			getopt_parse_options=0
+			
+			# option was read, remove it
+			getopt_args=("${getopt_args[@]:1}")
+			
+		elif [[ "_${filt_arg:0:2}" == "_--" ]]
 		then
 			# long flag detected
 			
 			# option was read, remove it
 			getopt_args=("${getopt_args[@]:1}")
 
-			getopt_check_name_exist "${filt_arg}"
+			getopt_check_option_exist "${filt_arg}"
 			if [[ $? -ne 0 ]]
 			then
 				echo "$(basename $0): unknown option '$filt_arg'" >&2
 				exit 1			
 			fi
 			
-			i=$(getopt_check_name_index "${filt_arg}")
+			i=$(getopt_check_option_index "${filt_arg}")
 			value=${getopt_values[$i]}
 			if [[ "_$value" == "_none" ]]
 			then
@@ -243,8 +351,8 @@ function getopt_read_arg() {
 
 			# set found option
 			index_arg=$i
-
-		elif [[ "_${filt_arg:0:1}" == "_-" ]]
+		
+		elif [[ "_${filt_arg:0:1}" == "_-" ]] && [[ $getopt_parse_options -eq 1 ]]
 		then
 			# shorthand flag detected
 			if [[ ${#filt_arg} -eq 1 ]]
@@ -274,14 +382,14 @@ function getopt_read_arg() {
 				getopt_args=("${getopt_args[@]:1}")
 			fi
 			
-			getopt_check_name_exist "-${short_arg}"
+			getopt_check_option_exist "-${short_arg}"
 			if [[ $? -ne 0 ]]
 			then
 				echo "$(basename $0): unknown shorthand option '$short_arg'" >&2
 				exit 1			
 			fi
 	
-			i=$(getopt_check_name_index "-${short_arg}")
+			i=$(getopt_check_option_index "-${short_arg}")
 			value=${getopt_values[$i]}
 			if [[ "_$value" == "_none" ]]
 			then
@@ -327,12 +435,13 @@ function getopt_read_arg() {
 		fi
 		
 		return 0
+		
 	else
 		# command detected
 
 		res=0
 		
-		getopt_check_name_exist "${arg}"
+		getopt_check_command_exist "${arg}"
 		if [[ $? -ne 0 ]]
 		then
 			if [[ $getopt_custom_command -eq 0 ]]
@@ -348,7 +457,7 @@ function getopt_read_arg() {
 			getopt_args=("${getopt_args[@]:1}")
 		
 			# get command index
-			index_arg=$(getopt_check_name_index "${arg}")
+			index_arg=$(getopt_check_command_index "${arg}")
 			action=${getopt_actions[$index_arg]}
 					
 			# execute action

@@ -14,7 +14,7 @@ Source the script
 source /usr/local/share/getopt/getopt.sh
 ```
 
-It will add some functions to allow describing some input options inside tour script, exemple:
+It will add some functions to describe the script input options inside, exemple:
 
 ```
 opt_config=$HOME/.docker

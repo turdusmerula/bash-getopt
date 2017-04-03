@@ -142,7 +142,7 @@ function getopt_check_option_exist() {
 	for short in "${getopt_shorts[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
 		then
 			return 0
 		fi
@@ -154,7 +154,7 @@ function getopt_check_option_exist() {
 	for option in "${getopt_names[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
 		then
 			return 0
 		fi
@@ -226,7 +226,7 @@ function getopt_check_option_index() {
 	for short in "${getopt_shorts[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
 		then
 			echo $i
 			return 0
@@ -238,7 +238,7 @@ function getopt_check_option_index() {
 	for option in "${getopt_names[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$option" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$option" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
 		then
 			echo $i
 			return 0

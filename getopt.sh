@@ -238,7 +238,7 @@ function getopt_check_option_index() {
 	for option in "${getopt_names[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$option" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
 		then
 			echo $i
 			return 0
@@ -259,7 +259,7 @@ function getopt_check_command_index() {
 	for option in "${getopt_names[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$option" == "_$option" ]] && [[ $type -eq 3 ]]
+		if [[ "_$name" == "_$option" ]] && [[ $type -eq 3 ]]
 		then
 			echo $i
 			return 0
@@ -303,7 +303,7 @@ function getopt_read_arg() {
 	        unset value_arg
 	    fi
 		
-		if [[ "_${filt_arg}" == "_--" ]] && [[ $getopt_parse_options -eq 1 ]]
+		if [[ "_${arg}" == "_--" ]] && [[ $getopt_parse_options -eq 1 ]]
 		then
 			# stop parsing options
 			getopt_parse_options=0

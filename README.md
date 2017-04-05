@@ -152,3 +152,18 @@ getopt_set_args "${array[@]}"
 
 Allow ```getopt_read_args``` to not fail if an unknown command is found, allowing to add custom behavior.
 
+```getopt_read_args``` will stop gracefuly and give 2 as result indicating that it has encountered an unknown command, you can then add a special behavior to treat it:
+
+```
+getopt_read_args
+res=$?
+[[ $res -eq 1 ]] && {
+	# wrong option or premature end
+	getopt_usage
+	exit 1
+}
+[[ $res -eq 2 ]] && {
+	# custom command, add your own action
+	echo "Custom regex: ${getopt_args[*]}"
+}
+```

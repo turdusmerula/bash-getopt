@@ -8,9 +8,11 @@ opt_config=$HOME/.docker
 opt_debug=0
 opt_tls=0
 
+output=$(mktemp -d)
 
 getopt_command_description="COMMAND"
 getopt_add_option "-c" "--config" "string" "Location of client config files (default $opt_config)" opt_config
+getopt_add_action_option "-l" "--list" "[]" "add an item to the list" 'echo -n "$value_arg " >> $output/list'
 getopt_add_flag   "-D" "--debug"  		   "Enable debug mode" opt_debug
 getopt_add_help
 getopt_add_flag 	   "--tls"    		   "Use TLS; implied by --tlsverify" opt_tls
@@ -29,3 +31,4 @@ getopt_read_args || {
 echo "$(basename $0): opt_config: $opt_config"
 echo "$(basename $0): opt_debug: $opt_debug"
 echo "$(basename $0): opt_tls: $opt_tls"
+echo "$(basename $0): list=$(cat $output/list)"

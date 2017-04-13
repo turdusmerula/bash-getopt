@@ -32,10 +32,11 @@ getopt_arg_command=0
 #types:
 # - 0 flag
 # - 1 option
-# - 2 action
+# - 2 action flag
 # - 3 command
 # - 4 category
 # - 5 free text
+# - 6 action option
 
 # Show available options
 function getopt_show_options() {
@@ -47,8 +48,8 @@ function getopt_show_options() {
 		value=${getopt_values[i]}
 		description=${getopt_descriptions[i]}
 		
-		# flag or option or action_flag
-		if [ ${type} -eq 0 ] || [ ${type} -eq 1 ] || [ ${type} -eq 2 ]
+		# flag or option or action_flag or action_option
+		if [ ${type} -eq 0 ] || [ ${type} -eq 1 ] || [ ${type} -eq 2 ] || [ ${type} -eq 6 ]
 		then
 			
 			if [ "_$short" == "_none" ]
@@ -142,7 +143,7 @@ function getopt_check_option_exist() {
 	for short in "${getopt_shorts[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
 		then
 			return 0
 		fi
@@ -154,7 +155,7 @@ function getopt_check_option_exist() {
 	for option in "${getopt_names[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
 		then
 			return 0
 		fi
@@ -226,7 +227,7 @@ function getopt_check_option_index() {
 	for short in "${getopt_shorts[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
 		then
 			echo $i
 			return 0
@@ -238,7 +239,7 @@ function getopt_check_option_index() {
 	for option in "${getopt_names[@]}"
 	do
 		type=${getopt_types[$i]}
-		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] )
+		if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
 		then
 			echo $i
 			return 0
@@ -432,6 +433,10 @@ function getopt_read_arg() {
 		then
 			# set action value
 			eval "${getopt_actions[$i]}"			
+		elif [[ $type -eq 6 ]]
+		then
+			# set action value
+			eval "${getopt_actions[$i]}"			
 		fi
 		
 		return 0
@@ -588,7 +593,40 @@ function getopt_add_action_flag() {
 		description=$3
 		action=$4
 	else
-		echo "getopt_add_action: wrong parameters" >&2 
+		echo "getopt_add_action_flag: wrong parameters" >&2 
+		exit 1
+	fi
+	
+	getopt_names[$getopt_option_num]="$name"
+	getopt_shorts[$getopt_option_num]="$short"
+	getopt_values[$getopt_option_num]="$value"
+	getopt_descriptions[$getopt_option_num]="$description"
+	getopt_actions[$getopt_option_num]="$action"
+	getopt_types[$getopt_option_num]="$type"
+	
+	(( getopt_option_num = getopt_option_num + 1 ))
+}
+
+function getopt_add_action_option() {
+	type=6
+	getopt_has_option=1
+	
+	if [ $# -eq 4 ]
+	then
+		short=none
+		name=$1
+		value=$2
+		description=$3
+		action=$4
+	elif [ $# -eq 5 ]
+	then
+		short=$1
+		name=$2
+		value=$3
+		description=$4
+		action=$5
+	else
+		echo "getopt_add_action_option: wrong parameters" >&2 
 		exit 1
 	fi
 	

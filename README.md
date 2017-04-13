@@ -78,6 +78,22 @@ Takes 4 parameters:
 
 Exemple, for the ```--help``` option you will find the following action ```getopt_usage; exit 1``` that show usage and exits immediately.
 
+### getopt_add_action_option
+
+Add an option to the option list with a custom parameter.
+
+This option differs from ```getopt_add_option``` as it allow to specify a custom action instead of filling a variable.
+
+Takes 5 parameters:
+
+  * shorthand name of the option prefixed by ```-```, one letter size. This parameter is Optional.
+  * full name of the option prefixed by ```--```.
+  * description of the expected value.
+  * description of the option.
+  * action to execute.
+
+Inside the action you can access to the content of the option value with the ```value_arg``` variable .
+
 ### getopt_add_option
 
 Add an option to the list, options are waiting for the user to fill a value.

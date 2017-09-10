@@ -1,6 +1,8 @@
 # bash-getopt
 
-A customizable version of getopt for bash
+A customizable version of getopt for bash.
+
+bash-getopt allows to add complex option patterns to your scripts with as many as sublevels as needed.
 
 ## Install
 
@@ -47,6 +49,26 @@ echo "$(basename $0): opt_config: $opt_config"
 echo "$(basename $0): opt_debug: $opt_debug"
 echo "$(basename $0): opt_tls: $opt_tls"
 ```
+This will result in help menu showing when no parameter is given or with ```--help```:
+
+```
+Usage: docker 
+
+Options:
+  -c, --config string               Location of client config files (default /home/yeah/.docker)
+  -D, --debug                       Enable debug mode
+  -h, --help                        Print usage
+      --tls                         Use TLS; implied by --tlsverify
+
+Management commands:
+  container                     Manage containers
+
+Commands:
+  attach                        Attach to a running container
+
+Run 'docker COMMAND --help' for more information on a command.
+```
+See the tests to have a full overview of bash-getopts capacity.
 
 ### getopt_command_description
 

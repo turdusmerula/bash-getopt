@@ -1,4 +1,5 @@
 #!/bin/bash
+version=1.0.0
 getopt_option_num=0
 #getopt_shorts[]: short names
 #getopt_names[]: long names

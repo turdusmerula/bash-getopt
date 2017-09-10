@@ -8,6 +8,8 @@ bash-getopt allows to add complex option patterns to your scripts with as many a
 
 Do a ```make install```, the script will then be available at ```/usr/local/share/getopt/getopt.sh```
 
+Note: bash-getopt is made with only one script ```getopt.sh``` allowing you to embed it directly inside your code source.
+
 ## Usage
 
 Source the script 

@@ -446,7 +446,7 @@ function getopt_read_arg() {
 		elif [[ $type -eq 1 ]]
 		then
 			# set option value
-			eval "export ${getopt_actions[$i]}=$value_arg"			
+			eval "export ${getopt_actions[$i]}='$value_arg'"			
 		elif [[ $type -eq 2 ]]
 		then
 			# set action value

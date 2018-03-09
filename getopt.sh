@@ -298,6 +298,18 @@ getopt_set_args() {
 	done
 }
 
+# shift n arguments to left
+# @param n number of arguments to shift
+function getopt_shift_arg() {
+	local n=$1
+	[ -z "$n" ] && n=1
+	
+	for i in $(seq 1 $n)
+	do
+		getopt_args=("${getopt_args[@]:1}")
+	done
+}
+
 # Read one argument from cached command line
 # return :
 # 0: option was read

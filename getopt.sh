@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-version=1.0.0
+version=1.0.1
 getopt_option_num=0
 #getopt_shorts[]: short names
 #getopt_names[]: long names
@@ -123,7 +123,7 @@ function getopt_add_param_description() {
 
 function getopt_allow_custom_command() {
 	getopt_custom_command=1
-	return 1
+	return 0
 }
 
 # return:
@@ -525,6 +525,26 @@ function getopt_read_args() {
 	fi
 
 	return 0
+}
+
+# Shift left arguments from getopt_args
+# @param count Number (default 1)
+function getopt_shift() {
+	if [ "_$1" == "_" ]
+	then
+		count=1
+	else
+		count=$1
+	fi
+	
+	while [[ count -ne 0 ]]
+	do
+		# command was read, remove it
+		getopt_args=("${getopt_args[@]:1}")
+		
+		(( count = count -1 ))
+	done
+	
 }
 
 function getopt_add_flag() {

@@ -65,13 +65,14 @@ getopt_arg_command=0
 
 # Show available options
 function getopt_show_options() {
-    i=0
+    local i=0
+    local type
     for type in "${getopt_types[@]}"
     do
-        short=${getopt_shorts[i]}
-        name="${getopt_names[i]}"
-        value=${getopt_values[i]}
-        description=${getopt_descriptions[i]}
+        local short=${getopt_shorts[i]}
+        local name="${getopt_names[i]}"
+        local value=${getopt_values[i]}
+        local description=${getopt_descriptions[i]}
         
         # flag or option or action_flag or action_option
         if [ ${type} -eq 0 ] || [ ${type} -eq 1 ] || [ ${type} -eq 2 ] || [ ${type} -eq 6 ]
@@ -79,9 +80,9 @@ function getopt_show_options() {
             
             if [ "_$short" == "_none" ]
             then
-                option_name=''
+                local option_name=''
             else
-                option_name=$(printf "%2s, " $short)
+                local option_name=$(printf "%2s, " $short)
             fi                
         	option_name="${option_name}${name}"
             
@@ -117,13 +118,14 @@ function getopt_show_options() {
 }
 
 function getopt_show_parameters() {
-    i=0
+    local i=0
+    local type
     for type in "${getopt_types[@]}"
     do
-        short=${getopt_shorts[i]}
-        name="${getopt_names[i]}"
-        value=${getopt_values[i]}
-        description=${getopt_descriptions[i]}
+        local short=${getopt_shorts[i]}
+        local name="${getopt_names[i]}"
+        local value=${getopt_values[i]}
+        local description=${getopt_descriptions[i]}
         
         # parameter
         if [ ${type} -eq 7 ]
@@ -159,8 +161,9 @@ function getopt_allow_custom_command() {
 # 0: name exist
 # 1: name does not exist
 function getopt_check_name_exist() {
-    name="$1"
+    local name="$1"
     
+    local short
     for short in "${getopt_shorts[@]}"
     do
         if [[ "_$name" == "_$short" ]]
@@ -169,6 +172,7 @@ function getopt_check_name_exist() {
         fi
     done
 
+	local option
     for option in "${getopt_names[@]}"
     do
         if [[ "_$name" == "_$option" ]]
@@ -184,12 +188,13 @@ function getopt_check_name_exist() {
 # 0: option exist
 # 1: option does not exist
 function getopt_check_option_exist() {
-    name="$1"
+    local name="$1"
     
-    i=0
+    local i=0
+    local short
     for short in "${getopt_shorts[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
         then
             return 0
@@ -198,10 +203,11 @@ function getopt_check_option_exist() {
         (( i = i + 1 ))
     done
 
-    i=0
+    local i=0
+    local option
     for option in "${getopt_names[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
         then
             return 0
@@ -217,12 +223,13 @@ function getopt_check_option_exist() {
 # 0: command exist
 # 1: command does not exist
 function getopt_check_command_exist() {
-    name="$1"
+    local name="$1"
     
-    i=0
+    local i=0
+    local option
     for option in "${getopt_names[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ "_$name" == "_$option" ]] && [[ $type -eq 3 ]]
         then
             return 0
@@ -237,24 +244,25 @@ function getopt_check_command_exist() {
 # 0: parameter exist
 # 1: parameter does not exist
 function getopt_check_parameter_exist() {
-    parameter="$1"
-    
-    i=0
+    local i=0
+    local ip=0
+    local option
     for option in "${getopt_names[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ $getopt_parameters_count -eq -1 ]]
         then
-        	return 1
+        	return 0
         fi
-        if [[ $type -eq 7 ]] && [[ $i -ge $getopt_current_parameter ]] 
+        if [[ $type -eq 7 ]] && [[ $ip -ge $getopt_current_parameter ]] 
         then
             return 0
         fi
         if [[ $type -eq 7 ]]
     	then
-    		(( i = i + 1 ))
+    		(( ip = ip + 1 ))
     	fi 
+		(( i = i + 1 ))
     done
 
     return 1
@@ -264,9 +272,10 @@ function getopt_check_parameter_exist() {
 # 0: name exist
 # 1: name does not exist
 function getopt_check_name_index() {
-    name="$1"
+    local name="$1"
     
-    i=0
+    local i=0
+    local short
     for short in "${getopt_shorts[@]}"
     do
         if [[ "_$name" == "_$short" ]]
@@ -277,7 +286,8 @@ function getopt_check_name_index() {
         (( i = i + 1 ))
     done
 
-    i=0
+    local i=0
+    local option
     for option in "${getopt_names[@]}"
     do
         if [[ "_$name" == "_$option" ]]
@@ -295,12 +305,13 @@ function getopt_check_name_index() {
 # 0: option exist
 # 1: option does not exist
 function getopt_check_option_index() {
-    name="$1"
+    local name="$1"
     
-    i=0
+    local i=0
+    local short
     for short in "${getopt_shorts[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ "_$name" == "_$short" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
         then
             echo $i
@@ -309,10 +320,11 @@ function getopt_check_option_index() {
         (( i = i + 1 ))
     done
 
-    i=0
+    local i=0
+    local option
     for option in "${getopt_names[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ "_$name" == "_$option" ]] && ( [[ $type -eq 0 ]] || [[ $type -eq 1 ]] || [[ $type -eq 2 ]] || [[ $type -eq 6 ]] )
         then
             echo $i
@@ -328,12 +340,13 @@ function getopt_check_option_index() {
 # 0: option exist
 # 1: option does not exist
 function getopt_check_command_index() {
-    name="$1"
+    local name="$1"
     
-    i=0
+    local i=0
+    local option
     for option in "${getopt_names[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ "_$name" == "_$option" ]] && [[ $type -eq 3 ]]
         then
             echo $i
@@ -349,18 +362,19 @@ function getopt_check_command_index() {
 # 0: option exist
 # 1: option does not exist
 function getopt_check_current_parameter_index() {
-    name="$1"
+    local name="$1"
     
     if [[ $getopt_parameters_count -eq 0 ]]
     then
     	return 1
     fi
    
-    i=0
-    ip=0
+    local i=0
+    local ip=0
+    local option
     for option in "${getopt_names[@]}"
     do
-        type=${getopt_types[$i]}
+        local type=${getopt_types[$i]}
         if [[ $type -eq 7 ]]
         then
         	if [[ $ip -eq $getopt_current_parameter ]]
@@ -391,6 +405,7 @@ function getopt_shift_arg() {
     local n=$1
     [ -z "$n" ] && n=1
     
+    local n
     for i in $(seq 1 $n)
     do
         getopt_args=("${getopt_args[@]:1}")
@@ -443,8 +458,8 @@ function getopt_read_arg() {
                 exit 1            
             fi
             
-            i=$(getopt_check_option_index "${filt_arg}")
-            value=${getopt_values[$i]}
+            local i=$(getopt_check_option_index "${filt_arg}")
+            local value=${getopt_values[$i]}
             if [[ "_$value" == "_none" ]]
             then
                 if [[ -n "$value_arg" ]]
@@ -468,7 +483,7 @@ function getopt_read_arg() {
             fi
 
             # set found option
-            index_arg=$i
+            local index_arg=$i
         
         elif [[ "_${filt_arg:0:1}" == "_-" ]] && [[ $getopt_parse_options -eq 1 ]]
         then
@@ -487,7 +502,7 @@ function getopt_read_arg() {
                 # set shorthand options left to read
                 if [[ -z "$value_arg" ]]
                 then
-                    getopt_args[0]="-${filt_arg:2}"
+                    getopt_args[0]="${filt_arg:2}"
                 else
                     getopt_args[0]="-${filt_arg:2}=$value_arg"
                 fi
@@ -507,8 +522,8 @@ function getopt_read_arg() {
                 exit 1            
             fi
     
-            i=$(getopt_check_option_index "-${short_arg}")
-            value=${getopt_values[$i]}
+            local i=$(getopt_check_option_index "-${short_arg}")
+            local value=${getopt_values[$i]}
             if [[ "_$value" == "_none" ]]
             then
                 if [[ -n "$value_arg" ]]
@@ -532,12 +547,12 @@ function getopt_read_arg() {
             fi
             
             # set found option
-            filt_arg=$short_arg
-            index_arg=$i
+            local filt_arg=$short_arg
+            local index_arg=$i
         fi
         
         # treat associated action
-        type=${getopt_types[$index_arg]}
+        local type=${getopt_types[$index_arg]}
         if [[ $type -eq 0 ]]
         then
             # set flag value
@@ -561,13 +576,13 @@ function getopt_read_arg() {
     else
         # command or parameter detected
 
-        res=0
+        local res=0
 
-		read_command=0
-        getopt_check_parameter_exist "${arg}"
-        if [[ $? -eq 1 ]]
+		local read_command=0
+        getopt_check_parameter_exist
+        if [[ $? -eq 0 ]]
 		then
-			read_parameter=0
+			local read_parameter=0
 			if [[ $getopt_parameters_count -eq -1 ]]
 			then
 				read_parameter=1
@@ -587,13 +602,17 @@ function getopt_read_arg() {
             getopt_args=("${getopt_args[@]:1}")
         
             # get parameter index
-            index_arg=$(getopt_check_current_parameter_index)
-            action=${getopt_actions[$index_arg]}
+            local index_arg=$(getopt_check_current_parameter_index)
+            local action=${getopt_actions[$index_arg]}
                     
             # set parameter value
-            eval "export ${getopt_actions[$index_arg]}='${arg}'"            
+            eval "export ${action}='${arg}'"            
         
        		(( getopt_current_parameter = getopt_current_parameter + 1 ))
+		elif [[ $getopt_has_command -eq 0 ]]
+		then
+            echo "$(basename $0): unknown parameter '$arg'" >&2
+            exit 1
        	fi
 
 		if [[ $read_command -eq 1 ]]
@@ -614,8 +633,8 @@ function getopt_read_arg() {
 	            getopt_args=("${getopt_args[@]:1}")
 	        
 	            # get command index
-	            index_arg=$(getopt_check_command_index "${arg}")
-	            action=${getopt_actions[$index_arg]}
+	            local index_arg=$(getopt_check_command_index "${arg}")
+	            local action=${getopt_actions[$index_arg]}
 	                    
 	            # execute action
 	            $action "${getopt_args[@]}"
@@ -640,7 +659,7 @@ function getopt_read_arg() {
 # 1: incomplete command line
 # 2: custom command found
 function getopt_read_args() {
-    res=0
+    local res=0
     while [[ $res -eq 0 ]]
     do
          getopt_read_arg
@@ -651,7 +670,7 @@ function getopt_read_args() {
     then
     	if [[ $getopt_current_parameter -lt $getopt_parameters_count ]]
 		then
-            index_arg=$(getopt_check_current_parameter_index)
+            local index_arg=$(getopt_check_current_parameter_index)
             echo "$(basename $0): missing ${getopt_names[$index_arg]}" >&2
             exit 1
 		fi			
@@ -677,9 +696,9 @@ function getopt_read_args() {
 function getopt_shift() {
     if [ "_$1" == "_" ]
     then
-        count=1
+        local count=1
     else
-        count=$1
+        local count=$1
     fi
     
     while [[ count -ne 0 ]]
@@ -693,22 +712,22 @@ function getopt_shift() {
 }
 
 function getopt_add_flag() {
-    value=none
-    type=0
+    local value=none
+    local type=0
     getopt_has_option=1
 
     if [ $# -eq 3 ]
     then
-        short=none
-        name=$1
-        description=$2
-        action=$3
+        local short=none
+        local name=$1
+        local description=$2
+        local action=$3
     elif [ $# -eq 4 ]
     then
-        short=$1
-        name=$2
-        description=$3
-        action=$4
+        local short=$1
+        local name=$2
+        local description=$3
+        local action=$4
     else
         echo "getopt_add_flag: wrong parameters" >&2 
         exit 1
@@ -725,23 +744,23 @@ function getopt_add_flag() {
 }
 
 function getopt_add_option() {
-    type=1
+    local type=1
     getopt_has_option=1
     
     if [ $# -eq 4 ]
     then
-        short=none
-        name=$1
-        value=$2
-        description=$3
-        action=$4
+        local short=none
+        local name=$1
+        local value=$2
+        local description=$3
+        local action=$4
     elif [ $# -eq 5 ]
     then
-        short=$1
-        name=$2
-        value=$3
-        description=$4
-        action=$5
+        local short=$1
+        local name=$2
+        local value=$3
+        local description=$4
+        local action=$5
     else
         echo "getopt_add_option: wrong parameters" >&2 
         exit 1
@@ -758,16 +777,15 @@ function getopt_add_option() {
 }
 
 function getopt_add_parameter() {
-        type=7
-        (( getopt_parameters_count = getopt_parameters_count +1 ))
+        local type=7
 
         if [ $# -eq 3 ]
         then
-                short=none
-                name=$1
-                value=none
-                description=$2
-                action=$3
+                local short=none
+                local name=$1
+                local value=none
+                local description=$2
+                local action=$3
         else
                 echo "getopt_add_parameter: wrong parameters" >&2
                 exit 1
@@ -780,27 +798,28 @@ function getopt_add_parameter() {
         getopt_actions[$getopt_option_num]="$action"
         getopt_types[$getopt_option_num]="$type"
 
-        (( getopt_option_num = getopt_option_num + 1 ))
+        (( getopt_parameters_count = getopt_parameters_count + 1 ))
+	    (( getopt_option_num = getopt_option_num + 1 ))
 }
 
 function getopt_add_action_flag() {
-    type=2
+    local type=2
     getopt_has_option=1
     
     if [ $# -eq 3 ]
     then
-        short=none
-        name=$1
-        value=none
-        description=$2
-        action=$3
+        local short=none
+        local name=$1
+        local value=none
+        local description=$2
+        local action=$3
     elif [ $# -eq 4 ]
     then
-        short=$1
-        name=$2
-        value=none
-        description=$3
-        action=$4
+        local short=$1
+        local name=$2
+        local value=none
+        local description=$3
+        local action=$4
     else
         echo "getopt_add_action_flag: wrong parameters" >&2 
         exit 1
@@ -817,23 +836,23 @@ function getopt_add_action_flag() {
 }
 
 function getopt_add_action_option() {
-    type=6
+    local type=6
     getopt_has_option=1
     
     if [ $# -eq 4 ]
     then
-        short=none
-        name=$1
-        value=$2
-        description=$3
-        action=$4
+        local short=none
+        local name=$1
+        local value=$2
+        local description=$3
+        local action=$4
     elif [ $# -eq 5 ]
     then
-        short=$1
-        name=$2
-        value=$3
-        description=$4
-        action=$5
+        local short=$1
+        local name=$2
+        local value=$3
+        local description=$4
+        local action=$5
     else
         echo "getopt_add_action_option: wrong parameters" >&2 
         exit 1
@@ -850,16 +869,16 @@ function getopt_add_action_option() {
 }
 
 function getopt_add_command() {
-    type=3
+    local type=3
     getopt_has_command=1
     
     if [ $# -eq 3 ]
     then
-        short=none
-        name=$1
-        value=none
-        description=$2
-        action=$3
+        local short=none
+        local name=$1
+        local value=none
+        local description=$2
+        local action=$3
     else
         echo "getopt_add_command: wrong parameters" >&2 
         exit 1
@@ -876,15 +895,15 @@ function getopt_add_command() {
 }
 
 function getopt_add_category() {
-    type=4
+    local type=4
 
     if [ $# -eq 1 ]
     then
-        short=none
-        name=$1
-        value=none
-        description=none
-        action=none
+        local short=none
+        local name=$1
+        local value=none
+        local description=none
+        local action=none
     else
         echo "getopt_add_category: wrong parameters" >&2 
         exit 1
@@ -901,13 +920,13 @@ function getopt_add_category() {
 }
 
 function getopt_add_text() {
-    type=5
+    local type=5
 
-    short=none
-    name=$*
-    value=none
-    description=none
-    action=none
+    local short=none
+    local name=$*
+    local value=none
+    local description=none
+    local action=none
     
     getopt_names[$getopt_option_num]="$name"
     getopt_shorts[$getopt_option_num]="$short"

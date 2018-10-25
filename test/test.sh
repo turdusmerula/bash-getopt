@@ -4,24 +4,26 @@ xpl_path=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 source ${xpl_path}/../getopt.sh
 
-opt_config=$HOME/.docker
-opt_debug=0
-opt_tls=0
+opt_value1=value1
+opt_flag1=0
+opt_flag2=0
 
 output=$(mktemp -d)
-
+echo -n > $output/list
 getopt_command_description="COMMAND"
-getopt_add_option "-c" "--config" "string" "Location of client config files (default $opt_config)" opt_config
-getopt_add_action_option "-l" "--list" "[]" "add an item to the list" 'echo -n "$value_arg " >> $output/list'
-getopt_add_flag   "-D" "--debug"  		   "Enable debug mode" opt_debug
+getopt_add_option        "-v" "--value" "string"   "Option in variable (default $opt_value1)" opt_value1
+getopt_add_action_option "-l" "--list"  "[]"       "Option that add value in a file" 'echo -n "$value_arg " >> $output/list'
+getopt_add_flag          "-f" "--flag1"  		   "Flag in variable" opt_flag1
+getopt_add_flag 	     "--flag2"    		       "Flag with no short name" opt_flag2
 getopt_add_help
-getopt_add_flag 	   "--tls"    		   "Use TLS; implied by --tlsverify" opt_tls
-getopt_add_category "Management commands"
-getopt_add_command "container" "Manage containers" ${xpl_path}/action/container.sh
-getopt_add_category "Commands"
-getopt_add_command "attach" "Attach to a running container" ${xpl_path}/action/attach.sh
-getopt_add_command "copy" "copy an image" ${xpl_path}/action/copy.sh
-getopt_add_command "rm" "remove an image" ${xpl_path}/action/rm.sh
+getopt_add_category "Command sub category 1"
+getopt_add_command "test_recursive"                 "Test recursive commands" ${xpl_path}/action/test_recursive.sh
+getopt_add_category "Command sub category 2"
+getopt_add_command "test_1_parameter"               "Test one mandatory parameter" ${xpl_path}/action/test_1_parameter.sh
+getopt_add_command "test_3_parameters"              "Test three mandatory parameters" ${xpl_path}/action/test_3_parameters.sh
+getopt_add_command "test_3_parameters_with_options" "Test three mandatory parameters mixed with options" ${xpl_path}/action/test_3_parameters_with_options.sh
+getopt_add_command "test_custom_command"            "Test custom command" ${xpl_path}/action/test_custom_command.sh
+getopt_add_command "sub_test4" "Sub command 4" ${xpl_path}/action/sub_test4.sh
 getopt_add_text "\nRun '$(basename $0) COMMAND --help' for more information on a command.\n"
 getopt_set_args "$@" 
 
@@ -30,7 +32,9 @@ getopt_read_args || {
 	exit 1
 }
 
-echo "$(basename $0): opt_config: $opt_config"
-echo "$(basename $0): opt_debug: $opt_debug"
-echo "$(basename $0): opt_tls: $opt_tls"
+echo "$(basename $0): opt_value1: $opt_value1"
+echo "$(basename $0): opt_flag1: $opt_flag1"
+echo "$(basename $0): opt_flag2: $opt_flag2"
 echo "$(basename $0): list=$(cat $output/list)"
+rm -rf $output
+echo "$(basename $0): exit ok"

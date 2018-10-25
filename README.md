@@ -132,7 +132,7 @@ Takes 4 parameters:
 
 ### getopt_add_help
 
-Add the ```--help``` option automaticallys.
+Add the ```--help``` option automatically.
 
 ### getopt_add_command
 
@@ -143,6 +143,16 @@ Takes 4 parameters:
   * name of the command.
   * description of the command.
   * path of the script to be executed.
+
+### getopt_add_parameter
+
+Add mandatory parameter to be given.
+
+Takes 4 parameters:
+
+  * name of the parameter.
+  * description of the parameter.
+  * variable name that will take the parameter value.
 
 ### getopt_add_category
 
@@ -171,6 +181,14 @@ Returns:
   * 0: and argument was read ok
   * 1: nothing was read
   * 2: a custom command was encountered and should be treated by script
+
+### getopt_shift
+
+Shift arguments from the cached command line and drop them.
+
+Takes 1 parameter:
+
+  * optional: number of arguments to shift, 1 by default.
 
 ### getopt_set_args
 

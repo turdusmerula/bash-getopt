@@ -20,6 +20,8 @@ getopt_add_category "Management commands"
 getopt_add_command "container" "Manage containers" ${xpl_path}/action/container.sh
 getopt_add_category "Commands"
 getopt_add_command "attach" "Attach to a running container" ${xpl_path}/action/attach.sh
+getopt_add_command "copy" "copy an image" ${xpl_path}/action/copy.sh
+getopt_add_command "rm" "remove an image" ${xpl_path}/action/rm.sh
 getopt_add_text "\nRun '$(basename $0) COMMAND --help' for more information on a command.\n"
 getopt_set_args "$@" 
 

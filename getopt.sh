@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-version=1.0.2
+version=1.0.3
 getopt_option_num=0
 #getopt_shorts[]: short names
 #getopt_names[]: long names
@@ -579,7 +579,7 @@ function getopt_read_arg() {
         local res=0
 
 		local read_command=0
-        getopt_check_parameter_exist
+        [ $getopt_parameters_count -ne 0 ] && getopt_check_parameter_exist
         if [[ $? -eq 0 ]]
 		then
 			local read_parameter=0
@@ -611,8 +611,13 @@ function getopt_read_arg() {
        		(( getopt_current_parameter = getopt_current_parameter + 1 ))
 		elif [[ $getopt_has_command -eq 0 ]]
 		then
-            echo "$(basename $0): unknown parameter '$arg'" >&2
-            exit 1
+            if [[ $getopt_custom_command -eq 0 ]]
+            then
+	            echo "$(basename $0): unknown parameter '$arg'" >&2
+	            exit 1
+	        else
+				read_command=1
+	        fi
        	fi
 
 		if [[ $read_command -eq 1 ]]

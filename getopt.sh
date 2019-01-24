@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-version=1.0.3
+version=1.1.1
 getopt_option_num=0
 #getopt_shorts[]: short names
 #getopt_names[]: long names

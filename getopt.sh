@@ -423,7 +423,7 @@ function getopt_read_arg() {
     [ ${#getopt_args[@]} -lt 1 ] && return 1
     
     local arg="${getopt_args[0]}" 
-    
+
     if [[ "_${arg:0:1}" == "_-" ]] && [[ $getopt_parse_options -eq 1 ]]
     then
         # parse option
@@ -642,7 +642,7 @@ function getopt_read_arg() {
 	            local action=${getopt_actions[$index_arg]}
 	                    
 	            # execute action
-	            $action "${getopt_args[@]}"
+	            $action "${getopt_args[@]}" || exit $?
 	            
 	            # no more options after command, all is transmitted to child command
 	            unset getopt_args
